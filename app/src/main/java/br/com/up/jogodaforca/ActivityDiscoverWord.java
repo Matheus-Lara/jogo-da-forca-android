@@ -18,7 +18,6 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     private int discoverWordLength;
     private String playerName;
 
-
     private TextView textViewRemainingAttempts;
     private TextView textViewDiscoverWord;
     private TextInputLayout inputLayoutDiscoverWordAttempt;
