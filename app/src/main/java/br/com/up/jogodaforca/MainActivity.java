@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 ActivityDiscoverWord.class
         );
 
-        intent.putExtra("discoverWord", Objects.requireNonNull(inputDiscoverWord.getText()).toString());
+        intent.putExtra("discoverWord", Objects.requireNonNull(inputDiscoverWord.getText()).toString().toUpperCase());
         intent.putExtra("playerName", Objects.requireNonNull(inputPlayerName.getText()).toString());
 
         Objects.requireNonNull(inputDiscoverWord.getText()).clear();
