@@ -16,6 +16,7 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     private String discoverWord;
     private String discoverWordHidden;
     private int discoverWordLength;
+    private int remainingAttempts;
     private String playerName;
 
     private TextView textViewRemainingAttempts;
@@ -51,8 +52,30 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     }
 
     private void tryWordOrCharacter() {
-        // TODO: implementar
-        throw new UnsupportedOperationException("Not implemented yet");
+        String discoverWordAttempt = Objects.requireNonNull(inputTextDiscoverWordAttempt.getText()).toString().toUpperCase();
+        if (discoverWordAttempt.length() == 1) {
+            if (this.discoverWord.contains(discoverWordAttempt)) {
+                char[] discoverWordHiddenAsArray = this.discoverWordHidden.toCharArray();
+                for (int i = 0; i < this.discoverWord.length(); i++) {
+                    if (String.valueOf(this.discoverWord.charAt(i)).equals(discoverWordAttempt)) {
+                        discoverWordHiddenAsArray[i] = discoverWordAttempt.charAt(0);
+                    }
+                }
+                this.discoverWordHidden = String.valueOf(discoverWordHiddenAsArray);
+                this.updateDiscoverWordHidden();
+            }
+        } else if (this.discoverWord.equals(discoverWordAttempt)) {
+            this.discoverWordHidden = this.discoverWord;
+        } else {
+            //TODO: implementar erro do jogador e decrementar tentativas (atualizar em tela)
+        }
+
+        //TODO: Adicionar no recyclerView tentativas já realizadas em um repository
+
+        if (this.discoverWord.equals(this.discoverWordHidden)) {
+            //TODO: implementar finalização para jogador venceu
+            throw new UnsupportedOperationException("Ainda não implementada a finalização do jogo");
+        }
     }
 
     private boolean validateTryWordOrCharacter() {
@@ -87,22 +110,33 @@ public class ActivityDiscoverWord extends AppCompatActivity {
         this.discoverWordLength = discoverWord.length();
         this.discoverWordHidden = "";
 
-        for (int i = 0; i < discoverWordLength; i++) {
-            this.discoverWordHidden += "_ ";
+        for (int i = 0; i < this.discoverWordLength; i++) {
+            this.discoverWordHidden += "_";
         }
     }
 
     private void startWithData() {
-        this.updateRemainingAttempts(this.discoverWordLength * 2);
+        this.remainingAttempts = this.discoverWordLength * 2;
+        this.updateRemainingAttempts();
         this.updateDiscoverWordHidden();
     }
 
-    private void updateRemainingAttempts(int remainingAttempts) {
-        textViewRemainingAttempts.setText("Tentativas restantes: " + remainingAttempts);
+    private void updateRemainingAttempts() {
+        String text = "Tentativas restantes: " + this.remainingAttempts;
+        textViewRemainingAttempts.setText(text);
     }
 
     private void updateDiscoverWordHidden() {
-        textViewDiscoverWord.setText(this.discoverWordHidden);
+        char[] discoverWordHiddenAsCharArray = this.discoverWordHidden.toCharArray();
+        String[] discoverWordHiddenWithBlankSpaces = new String[this.discoverWordLength];
+
+        int i = 0;
+        for (char character : discoverWordHiddenAsCharArray) {
+            discoverWordHiddenWithBlankSpaces[i] = String.valueOf(character);
+            i++;
+        }
+
+        textViewDiscoverWord.setText(String.join(" ", discoverWordHiddenWithBlankSpaces));
     }
 
     private void clearAll() {
