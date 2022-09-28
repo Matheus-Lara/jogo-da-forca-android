@@ -52,22 +52,15 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     }
 
     private void tryWordOrCharacter() {
-        String discoverWordAttempt = Objects.requireNonNull(inputTextDiscoverWordAttempt.getText()).toString().toUpperCase();
-        if (discoverWordAttempt.length() == 1) {
-            if (this.discoverWord.contains(discoverWordAttempt)) {
-                char[] discoverWordHiddenAsArray = this.discoverWordHidden.toCharArray();
-                for (int i = 0; i < this.discoverWord.length(); i++) {
-                    if (String.valueOf(this.discoverWord.charAt(i)).equals(discoverWordAttempt)) {
-                        discoverWordHiddenAsArray[i] = discoverWordAttempt.charAt(0);
-                    }
-                }
-                this.discoverWordHidden = String.valueOf(discoverWordHiddenAsArray);
-                this.updateDiscoverWordHidden();
-            }
+        String discoverWordAttempt = this.getAttempt();
+        this.clearAttempt();
+        if (discoverWordAttempt.length() == 1 && this.discoverWord.contains(discoverWordAttempt)) {
+            this.updateHiddenWithDiscoveredChar(discoverWordAttempt);
         } else if (this.discoverWord.equals(discoverWordAttempt)) {
             this.discoverWordHidden = this.discoverWord;
         } else {
             //TODO: implementar erro do jogador e decrementar tentativas (atualizar em tela)
+            throw new UnsupportedOperationException("Ainda não implementada a finalização do jogo");
         }
 
         //TODO: Adicionar no recyclerView tentativas já realizadas em um repository
@@ -78,8 +71,31 @@ public class ActivityDiscoverWord extends AppCompatActivity {
         }
     }
 
+    private void updateHiddenWithDiscoveredChar(String discoverWordAttempt) {
+        char[] discoverWordHiddenAsArray = this.discoverWordHidden.toCharArray();
+        for (int i = 0; i < this.discoverWord.length(); i++) {
+            if (String.valueOf(this.discoverWord.charAt(i)).equals(discoverWordAttempt)) {
+                discoverWordHiddenAsArray[i] = discoverWordAttempt.charAt(0);
+            }
+        }
+        this.discoverWordHidden = String.valueOf(discoverWordHiddenAsArray);
+        this.updateDiscoverWordHidden();
+    }
+
+    private String getAttempt() {
+        return Objects
+            .requireNonNull(inputTextDiscoverWordAttempt.getText())
+            .toString()
+            .replaceAll("\\s+","")
+            .toUpperCase();
+    }
+
+    private void clearAttempt() {
+        Objects.requireNonNull(inputTextDiscoverWordAttempt.getText()).clear();
+    }
+
     private boolean validateTryWordOrCharacter() {
-        String discoverWordAttempt = Objects.requireNonNull(inputTextDiscoverWordAttempt.getText()).toString();
+        String discoverWordAttempt = this.getAttempt();
         boolean noErrors = true;
 
         if (discoverWordAttempt.isEmpty()) {
@@ -89,6 +105,8 @@ public class ActivityDiscoverWord extends AppCompatActivity {
             inputLayoutDiscoverWordAttempt.setError("Informe apenas uma letra ou a palavra completa");
             noErrors = false;
         }
+
+        //TODO: verificar se o usuário já tentou a letra ou palavra
 
         if (noErrors) {
             inputLayoutDiscoverWordAttempt.setError(null);
@@ -140,7 +158,7 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     }
 
     private void clearAll() {
-        Objects.requireNonNull(inputTextDiscoverWordAttempt.getText()).clear();
+        this.clearAttempt();
         this.discoverWord = null;
         this.playerName = null;
         this.discoverWordLength = 0;
