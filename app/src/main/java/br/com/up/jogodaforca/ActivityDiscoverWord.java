@@ -75,9 +75,11 @@ public class ActivityDiscoverWord extends AppCompatActivity {
         } else {
             this.handleUserFailedAttempt();
         }
-        this.updateAttemptsList(discoverWordAttempt, playerScored);
-        if (this.discoverWord.equals(this.discoverWordHidden)) {
-            this.finishGame(true);
+        if (playerScored) {
+            this.updateAttemptsList(discoverWordAttempt, playerScored);
+            if (this.discoverWord.equals(this.discoverWordHidden)) {
+                this.finishGame(true);
+            }
         }
     }
 
@@ -135,7 +137,10 @@ public class ActivityDiscoverWord extends AppCompatActivity {
             noErrors = false;
         }
 
-        //TODO: verificar se o usuário já tentou a letra ou palavra
+        if (AttemptRepository.getInstance().existsByDescription(discoverWordAttempt)) {
+            inputLayoutDiscoverWordAttempt.setError("Você já tentou essa letra/palavra");
+            noErrors = false;
+        }
 
         if (noErrors) {
             inputLayoutDiscoverWordAttempt.setError(null);
@@ -146,9 +151,7 @@ public class ActivityDiscoverWord extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //TODO: tratar para tela de que o jogador perdeu
-        this.clearAll();
-        super.onBackPressed();
+        this.finishGame(false);
     }
 
     private void setData() {
@@ -198,12 +201,12 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     private void finishGame(boolean playerWon) {
         AttemptRepository.resetRepository();
         this.updateAttemptsRecyclerView();
+        this.clearAll();
 
-        //    this.clearAll();
-        //    Intent intent = new Intent(this, GameOverActivity.class);
-        //    intent.putExtra("playerWon", playerWon);
-        //    intent.putExtra("playerName", this.playerName);
-        //    intent.putExtra("discoverWord", this.discoverWord);
+        //   Intent intent = new Intent(this, GameOverActivity.class);
+        //   intent.putExtra("playerWon", playerWon);
+        //   intent.putExtra("playerName", this.playerName);
+        //   intent.putExtra("discoverWord", this.discoverWord);
         //   startActivity(intent);
     }
 }

@@ -28,4 +28,13 @@ public class AttemptRepository {
     public ArrayList<Attempt> getAll(){
         return attempts;
     }
+
+    public boolean existsByDescription(String description) {
+        for (Attempt attempt : attempts) {
+            if (attempt.getDescription().equals(description)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
