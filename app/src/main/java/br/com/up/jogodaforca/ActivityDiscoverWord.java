@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -201,12 +202,12 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     private void finishGame(boolean playerWon) {
         AttemptRepository.resetRepository();
         this.updateAttemptsRecyclerView();
-        this.clearAll();
 
-        //   Intent intent = new Intent(this, GameOverActivity.class);
-        //   intent.putExtra("playerWon", playerWon);
-        //   intent.putExtra("playerName", this.playerName);
-        //   intent.putExtra("discoverWord", this.discoverWord);
-        //   startActivity(intent);
+        Intent intent = new Intent(this, GameOverActivity.class);
+        intent.putExtra("playerWon", playerWon);
+        intent.putExtra("playerName", this.playerName);
+        intent.putExtra("discoverWord", this.discoverWord);
+        startActivity(intent);
+        this.clearAll();
     }
 }
