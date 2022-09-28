@@ -13,13 +13,17 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
+import br.com.up.jogodaforca.adapter.AttemptAdapter;
+import br.com.up.jogodaforca.models.Attempt;
+import br.com.up.jogodaforca.repository.AttemptRepository;
+
 public class ActivityDiscoverWord extends AppCompatActivity {
 
     private String discoverWord;
-    private String discoverWordHidden;
-    private int discoverWordLength;
-    private int remainingAttempts;
     private String playerName;
+    private int discoverWordLength;
+    private String discoverWordHidden;
+    private int remainingAttempts;
 
     private TextView textViewRemainingAttempts;
     private TextView textViewDiscoverWord;
@@ -61,27 +65,39 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     private void tryWordOrCharacter() {
         String discoverWordAttempt = this.getAttempt();
         this.clearAttempt();
+        boolean playerScored = false;
         if (discoverWordAttempt.length() == 1 && this.discoverWord.contains(discoverWordAttempt)) {
             this.updateHiddenWithDiscoveredChar(discoverWordAttempt);
+            playerScored = true;
         } else if (this.discoverWord.equals(discoverWordAttempt)) {
             this.discoverWordHidden = this.discoverWord;
+            playerScored = true;
         } else {
-            //TODO: implementar erro do jogador e decrementar tentativas (atualizar em tela)
-            throw new UnsupportedOperationException("Ainda não implementado que o jogador errou");
+            this.handleUserFailedAttempt();
         }
-        this.updateAttemptsList(discoverWordAttempt);
+        this.updateAttemptsList(discoverWordAttempt, playerScored);
         if (this.discoverWord.equals(this.discoverWordHidden)) {
-            //TODO: implementar finalização para jogador venceu
-            throw new UnsupportedOperationException("Ainda não implementada a finalização do jogo");
+            this.finishGame(true);
         }
     }
 
-    private void updateAttemptsList(String discoverWordAttempt) {
+    private void handleUserFailedAttempt() {
+        this.remainingAttempts--;
+        this.updateRemainingAttempts();
+        if (this.remainingAttempts == 0) {
+            this.finishGame(false);
+        }
+    }
 
+    private void updateAttemptsList(String discoverWordAttempt, boolean playerScored) {
+        AttemptRepository.getInstance().save(new Attempt(discoverWordAttempt, playerScored));
+        this.updateAttemptsRecyclerView();
     }
 
     private void updateAttemptsRecyclerView() {
-        //TODO: implementar atualização da lista de tentativas
+        recyclerViewAttempts.setAdapter(
+            new AttemptAdapter(AttemptRepository.getInstance().getAll())
+        );
     }
 
     private void updateHiddenWithDiscoveredChar(String discoverWordAttempt) {
@@ -176,5 +192,18 @@ public class ActivityDiscoverWord extends AppCompatActivity {
         this.playerName = null;
         this.discoverWordLength = 0;
         this.discoverWordHidden = null;
+        this.remainingAttempts = 0;
+    }
+
+    private void finishGame(boolean playerWon) {
+        AttemptRepository.resetRepository();
+        this.updateAttemptsRecyclerView();
+
+        //    this.clearAll();
+        //    Intent intent = new Intent(this, GameOverActivity.class);
+        //    intent.putExtra("playerWon", playerWon);
+        //    intent.putExtra("playerName", this.playerName);
+        //    intent.putExtra("discoverWord", this.discoverWord);
+        //   startActivity(intent);
     }
 }
