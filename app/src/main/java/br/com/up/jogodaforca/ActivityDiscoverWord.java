@@ -65,27 +65,28 @@ public class ActivityDiscoverWord extends AppCompatActivity {
     private void tryWordOrCharacter() {
         String discoverWordAttempt = this.getAttempt();
         this.clearAttempt();
-        boolean playerScored = false;
-        if (discoverWordAttempt.length() == 1 && this.discoverWord.contains(discoverWordAttempt)) {
-            this.updateHiddenWithDiscoveredChar(discoverWordAttempt);
-            playerScored = true;
-        } else if (this.discoverWord.equals(discoverWordAttempt)) {
-            this.discoverWordHidden = this.discoverWord;
-            playerScored = true;
-        } else {
-            this.handleUserFailedAttempt();
+
+        if (!this.discoverWord.contains(discoverWordAttempt)) {
+            this.handleUserFailedAttempt(discoverWordAttempt);
+            return;
         }
-        if (playerScored) {
-            this.updateAttemptsList(discoverWordAttempt, playerScored);
-            if (this.discoverWord.equals(this.discoverWordHidden)) {
-                this.finishGame(true);
-            }
+
+        String discovered = this.updateHiddenWithDiscoveredChar(discoverWordAttempt);
+        this.discoverWordHidden = discoverWordAttempt.length() > 1 ? this.discoverWord : discovered;
+
+        if (this.discoverWord.equals(this.discoverWordHidden)) {
+            this.finishGame(true);
+            return;
         }
+
+        this.updateDiscoverWordHidden();
+        this.updateAttemptsList(discoverWordAttempt, true);
     }
 
-    private void handleUserFailedAttempt() {
+    private void handleUserFailedAttempt(String discoverWordAttempt) {
         this.remainingAttempts--;
         this.updateRemainingAttempts();
+        this.updateAttemptsList(discoverWordAttempt, false);
         if (this.remainingAttempts == 0) {
             this.finishGame(false);
         }
@@ -102,15 +103,14 @@ public class ActivityDiscoverWord extends AppCompatActivity {
         );
     }
 
-    private void updateHiddenWithDiscoveredChar(String discoverWordAttempt) {
+    private String updateHiddenWithDiscoveredChar(String discoverWordAttempt) {
         char[] discoverWordHiddenAsArray = this.discoverWordHidden.toCharArray();
         for (int i = 0; i < this.discoverWord.length(); i++) {
             if (String.valueOf(this.discoverWord.charAt(i)).equals(discoverWordAttempt)) {
                 discoverWordHiddenAsArray[i] = discoverWordAttempt.charAt(0);
             }
         }
-        this.discoverWordHidden = String.valueOf(discoverWordHiddenAsArray);
-        this.updateDiscoverWordHidden();
+        return String.valueOf(discoverWordHiddenAsArray);
     }
 
     private String getAttempt() {
