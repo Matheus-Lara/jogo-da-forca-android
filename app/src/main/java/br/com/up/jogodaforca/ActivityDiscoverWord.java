@@ -1,6 +1,8 @@
 package br.com.up.jogodaforca;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -21,6 +23,7 @@ public class ActivityDiscoverWord extends AppCompatActivity {
 
     private TextView textViewRemainingAttempts;
     private TextView textViewDiscoverWord;
+    private RecyclerView recyclerViewAttempts;
     private TextInputLayout inputLayoutDiscoverWordAttempt;
     private TextInputEditText inputTextDiscoverWordAttempt;
     private Button buttonTryWordOrCharacter;
@@ -33,10 +36,14 @@ public class ActivityDiscoverWord extends AppCompatActivity {
 
         textViewRemainingAttempts = findViewById(R.id.text_view_remaining_attempts);
         textViewDiscoverWord = findViewById(R.id.text_view_discover_word);
-        //TODO: verificar recyclerView de palavras que já foram tentadas
+        recyclerViewAttempts = findViewById(R.id.recycler_view_attempts);
         inputLayoutDiscoverWordAttempt = findViewById(R.id.input_layout_discover_word_attempt);
         inputTextDiscoverWordAttempt = findViewById(R.id.input_text_discover_word_attempt);
         buttonTryWordOrCharacter = findViewById(R.id.button_try_word_or_character);
+
+        recyclerViewAttempts.setLayoutManager(
+            new LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        );
 
         this.setData();
         this.startWithData();
@@ -60,15 +67,21 @@ public class ActivityDiscoverWord extends AppCompatActivity {
             this.discoverWordHidden = this.discoverWord;
         } else {
             //TODO: implementar erro do jogador e decrementar tentativas (atualizar em tela)
-            throw new UnsupportedOperationException("Ainda não implementada a finalização do jogo");
+            throw new UnsupportedOperationException("Ainda não implementado que o jogador errou");
         }
-
-        //TODO: Adicionar no recyclerView tentativas já realizadas em um repository
-
+        this.updateAttemptsList(discoverWordAttempt);
         if (this.discoverWord.equals(this.discoverWordHidden)) {
             //TODO: implementar finalização para jogador venceu
             throw new UnsupportedOperationException("Ainda não implementada a finalização do jogo");
         }
+    }
+
+    private void updateAttemptsList(String discoverWordAttempt) {
+
+    }
+
+    private void updateAttemptsRecyclerView() {
+        //TODO: implementar atualização da lista de tentativas
     }
 
     private void updateHiddenWithDiscoveredChar(String discoverWordAttempt) {
