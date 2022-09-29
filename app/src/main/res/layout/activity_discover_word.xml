@@ -28,6 +28,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
+        android:background="#ECEBEB"
         app:boxBackgroundMode="outline"
         app:layout_constraintBottom_toTopOf="@+id/button_try_word_or_character"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,13 +39,15 @@
             android:id="@+id/input_text_discover_word_attempt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Palavra/Letra a adivinhar" />
+            android:background="#EAEAEA"
+            android:hint="Palavra/Letra a adivinhar"
+            android:shadowColor="#4C4C4C" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_attempts"
-        android:layout_width="409dp"
-        android:layout_height="436dp"
+        android:layout_width="399dp"
+        android:layout_height="211dp"
         android:layout_marginTop="13dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
